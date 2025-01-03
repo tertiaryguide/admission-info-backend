@@ -68,5 +68,4 @@ const applicantSchema = new mongoose.Schema({
 }
 });
 
-const Applicant = new Model(applicantSchema, "Applicant");
-export default Applicant;
+export const ApplicantModel = new Model("Applicant", applicantSchema);

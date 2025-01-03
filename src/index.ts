@@ -23,6 +23,10 @@ server.listen(process.env.PORT, ()=>{
     console.log("server running on port 8000")
 })
 
+app.use("", ()=>{
+    
+})
+
 mongoose.Promise = Promise
 mongoose.connect(process.env.DB_URL)
 mongoose.connection.on('error', (error: Error)=>console.log(error))
