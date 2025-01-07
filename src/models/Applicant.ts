@@ -1,6 +1,72 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
-const applicantSchema = new mongoose.Schema({
+// Define an interface for Applicant
+interface IApplicant extends Document {
+  backgroundData: {
+    surname: string;
+    otherNames: string;
+    dateOfBirth: Date;
+    nationality: string;
+    placeOfResidence: string;
+    digitalAddress: string;
+    email: string;
+    contact: string;
+  };
+  caretakr: {
+    mother: {
+      name: string;
+      isAlive: boolean;
+      contact: string;
+      address: string;
+      occupation: string;
+      nationality: string;
+    };
+    father: {
+      name: string;
+      isAlive: boolean;
+      contact: string;
+      address: string;
+      occupation: string;
+      nationality: string;
+    };
+    guardian: {
+      name: string;
+      isAlive: boolean;
+      contact: string;
+      address: string;
+      occupation: string;
+      nationality: string;
+    };
+  };
+  authentication: {
+    password: string;
+    salt?: string;
+    sessionToken?: string;
+  };
+  academicHistory: {
+    indexNumber: number;
+    school: string;
+    year: number;
+    course: string;
+    examsType: string;
+    results: {
+      subject: string;
+      score: number;
+    }[];
+  };
+  academicAspiration: {
+    programme: string;
+    priority: number;
+  }[];
+  documents: {
+    passportPicture?: string;
+    birthCertificate?: string;
+    nationalID?: string;
+  };
+}
+
+// Define the schema
+const applicantSchema: Schema = new Schema({
   backgroundData: {
     surname: { type: String, required: true },
     otherNames: { type: String, required: true },
@@ -64,8 +130,9 @@ const applicantSchema = new mongoose.Schema({
   documents: {
     passportPicture: String,
     birthCertificate: String,
-    nationalID: String
-}
+    nationalID: String,
+  },
 });
 
-export const ApplicantModel = new Model("Applicant", applicantSchema);
+// Export the model
+export const ApplicantModel: Model<IApplicant> = mongoose.model<IApplicant>("Applicant", applicantSchema);

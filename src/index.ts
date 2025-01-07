@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser"
 import http from "http"
 import * as dotenv from "dotenv";
 import mongoose from "mongoose"
+import router from "routes"
+
 const app = express();
 dotenv.config();
 
@@ -23,10 +25,7 @@ server.listen(process.env.PORT, ()=>{
     console.log("server running on port 8000")
 })
 
-app.use("", ()=>{
-    
-})
-
+app.use("/api/applicants", router);
 mongoose.Promise = Promise
 mongoose.connect(process.env.DB_URL)
 mongoose.connection.on('error', (error: Error)=>console.log(error))
