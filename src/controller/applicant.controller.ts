@@ -364,3 +364,75 @@ export const deleteAcademicAspiration = async (
     next(error);
   }
 };
+
+
+export const retrieveData = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { applicantId } = req.params;
+
+    if (!applicantId) {
+      res.status(400).json({ message: "Applicant ID is required" });
+      return;
+    }
+
+    const applicant = await ApplicantModel.findById(applicantId);
+
+    if (!applicant) {
+      res.status(404).json({ message: "Applicant not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Applicant data retrieved successfully", data: applicant });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const deleteData = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { applicantId } = req.params;
+
+    if (!applicantId) {
+      res.status(400).json({ message: "Applicant ID is required" });
+      return;
+    }
+
+    const deletedApplicant = await ApplicantModel.findByIdAndDelete(applicantId);
+
+    if (!deletedApplicant) {
+      res.status(404).json({ message: "Applicant not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Applicant deleted successfully", data: deletedApplicant });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const createProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { referenceNumber, passKey } = req.body;
+
+    if (!referenceNumber ||!passKey ) {
+      res.status(400).json({ message: "Reference number and passkey are required" });
+      return;
+    }
+
+    const existingApplicant = await ApplicantModel.findOne({ referenceNumber});
+
+    if (existingApplicant) {
+      res.status(409).json({ message: "Reference number already exists" });
+      return;
+    }
+
+    const newApplicant = new ApplicantModel({ referenceNumber, passKey});
+    await newApplicant.save();
+
+    res.status(201).json({ message: "Applicant profile created successfully", data: newApplicant });
+  } catch (error) {
+    next(error);
+  }
+}

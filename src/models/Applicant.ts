@@ -2,6 +2,8 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 // Define an interface for Applicant
 interface IApplicant extends Document {
+  referenceNumber: string;
+  passKey: string;
   backgroundData: {
     surname: string;
     otherNames: string;
@@ -67,53 +69,50 @@ interface IApplicant extends Document {
 
 // Define the schema
 const applicantSchema: Schema = new Schema({
+  referenceNumber: { type: String, unique: true, required: true },
+  passKey: { type: String, required: true },
   backgroundData: {
-    surname: { type: String, required: true },
-    otherNames: { type: String, required: true },
-    dateOfBirth: { type: Date, required: true },
-    nationality: { type: String, required: true },
-    placeOfResidence: { type: String, required: true },
-    digitalAddress: { type: String, required: true },
-    email: { type: String, required: true },
-    contact: { type: String, required: true },
+    surname: { type: String,  },
+    otherNames: { type: String,  },
+    dateOfBirth: { type: Date,  },
+    nationality: { type: String,  },
+    placeOfResidence: { type: String,  },
+    digitalAddress: { type: String,  },
+    email: { type: String,  },
+    contact: { type: String,  },
   },
   caretakr: {
     mother: {
-      name: { type: String, required: true },
-      isAlive: { type: Boolean, required: true },
-      contact: { type: String, required: true },
-      address: { type: String, required: true },
-      occupation: { type: String, required: true },
-      nationality: { type: String, required: true },
+      name: { type: String,  },
+      isAlive: { type: Boolean,  },
+      contact: { type: String,  },
+      address: { type: String,  },
+      occupation: { type: String,  },
+      nationality: { type: String,  },
     },
     father: {
-      name: { type: String, required: true },
-      isAlive: { type: Boolean, required: true },
-      contact: { type: String, required: true },
-      address: { type: String, required: true },
-      occupation: { type: String, required: true },
-      nationality: { type: String, required: true },
+      name: { type: String,  },
+      isAlive: { type: Boolean,  },
+      contact: { type: String,  },
+      address: { type: String,  },
+      occupation: { type: String,  },
+      nationality: { type: String,  },
     },
     guardian: {
-      name: { type: String, required: true },
-      isAlive: { type: Boolean, required: true },
-      contact: { type: String, required: true },
-      address: { type: String, required: true },
-      occupation: { type: String, required: true },
-      nationality: { type: String, required: true },
+      name: { type: String,  },
+      isAlive: { type: Boolean,  },
+      contact: { type: String,  },
+      address: { type: String,  },
+      occupation: { type: String,  },
+      nationality: { type: String,  },
     },
   },
-  authentication: {
-    password: { type: String, required: true, select: false },
-    salt: { type: String, select: false },
-    sessionToken: { type: String, select: false },
-  },
   academicHistory: {
-    indexNumber: { type: Number, required: true },
-    school: { type: String, required: true },
-    year: { type: Number, required: true },
-    course: { type: String, required: true },
-    examsType: { type: String, required: true },
+    indexNumber: { type: Number,  },
+    school: { type: String,  },
+    year: { type: Number,  },
+    course: { type: String,  },
+    examsType: { type: String,  },
     results: [
       {
         subject: { type: String },
