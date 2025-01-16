@@ -7,10 +7,11 @@ interface IApplicant extends Document {
   backgroundData: {
     surname: string;
     otherNames: string;
-    dateOfBirth: Date;
+    dateOfBirth: String;
     nationality: string;
     placeOfResidence: string;
     digitalAddress: string;
+    homeAddress: string,
     email: string;
     contact: string;
   };
@@ -74,10 +75,11 @@ const applicantSchema: Schema = new Schema({
   backgroundData: {
     surname: { type: String,  },
     otherNames: { type: String,  },
-    dateOfBirth: { type: Date,  },
+    dateOfBirth: { type: String,  },
     nationality: { type: String,  },
     placeOfResidence: { type: String,  },
     digitalAddress: { type: String,  },
+    homeAddress: { type: String,  },
     email: { type: String,  },
     contact: { type: String,  },
   },

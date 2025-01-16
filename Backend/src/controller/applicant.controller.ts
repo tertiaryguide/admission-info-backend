@@ -15,16 +15,19 @@ export const createBackgroundData = async (
       return;
     }
 
-    const applicant = await ApplicantModel.findById(applicantId);
+    const applicant = await ApplicantModel.findByIdAndUpdate(
+      applicantId,
+      { backgroundData },
+      { new: true } // Return the updated document
+    );
+    
     if (!applicant) {
       res.status(404).json({ message: "Applicant not found" });
       return;
     }
-
-    applicant.backgroundData = backgroundData;
-    await applicant.save();
-
+    
     res.status(200).json({ message: "Background data added successfully", data: applicant });
+
   } catch (error) {
     next(error); // Pass errors to the global error handler
   }
