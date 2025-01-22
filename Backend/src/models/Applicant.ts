@@ -11,7 +11,7 @@ interface IApplicant extends Document {
     nationality: string;
     placeOfResidence: string;
     digitalAddress: string;
-    homeAddress: string,
+    homeAddress: string;
     email: string;
     contact: string;
   };
@@ -57,15 +57,8 @@ interface IApplicant extends Document {
       score: number;
     }[];
   };
-  academicAspiration: {
-    programme: string;
-    priority: number;
-  }[];
-  documents: {
-    passportPicture?: string;
-    birthCertificate?: string;
-    nationalID?: string;
-  };
+  academicAspiration: string[];
+  documents: string[];
 }
 
 // Define the schema
@@ -73,48 +66,48 @@ const applicantSchema: Schema = new Schema({
   referenceNumber: { type: String, unique: true, required: true },
   passKey: { type: String, required: true },
   backgroundData: {
-    surname: { type: String,  },
-    otherNames: { type: String,  },
-    dateOfBirth: { type: String,  },
-    nationality: { type: String,  },
-    placeOfResidence: { type: String,  },
-    digitalAddress: { type: String,  },
-    homeAddress: { type: String,  },
-    email: { type: String,  },
-    contact: { type: String,  },
+    surname: { type: String },
+    otherNames: { type: String },
+    dateOfBirth: { type: String },
+    nationality: { type: String },
+    placeOfResidence: { type: String },
+    digitalAddress: { type: String },
+    homeAddress: { type: String },
+    email: { type: String },
+    contact: { type: String },
   },
   caretakr: {
     mother: {
-      name: { type: String,  },
-      isAlive: { type: Boolean,  },
-      contact: { type: String,  },
-      address: { type: String,  },
-      occupation: { type: String,  },
-      nationality: { type: String,  },
+      name: { type: String },
+      isAlive: { type: Boolean },
+      contact: { type: String },
+      address: { type: String },
+      occupation: { type: String },
+      nationality: { type: String },
     },
     father: {
-      name: { type: String,  },
-      isAlive: { type: Boolean,  },
-      contact: { type: String,  },
-      address: { type: String,  },
-      occupation: { type: String,  },
-      nationality: { type: String,  },
+      name: { type: String },
+      isAlive: { type: Boolean },
+      contact: { type: String },
+      address: { type: String },
+      occupation: { type: String },
+      nationality: { type: String },
     },
     guardian: {
-      name: { type: String,  },
-      isAlive: { type: Boolean,  },
-      contact: { type: String,  },
-      address: { type: String,  },
-      occupation: { type: String,  },
-      nationality: { type: String,  },
+      name: { type: String },
+      isAlive: { type: Boolean },
+      contact: { type: String },
+      address: { type: String },
+      occupation: { type: String },
+      nationality: { type: String },
     },
   },
   academicHistory: {
-    indexNumber: { type: Number,  },
-    school: { type: String,  },
-    year: { type: Number,  },
-    course: { type: String,  },
-    examsType: { type: String,  },
+    indexNumber: { type: Number },
+    school: { type: String },
+    year: { type: Number },
+    course: { type: String },
+    examsType: { type: String },
     results: [
       {
         subject: { type: String },
@@ -122,18 +115,12 @@ const applicantSchema: Schema = new Schema({
       },
     ],
   },
-  academicAspiration: [
-    {
-      programme: String,
-      priority: Number,
-    },
-  ],
-  documents: {
-    passportPicture: String,
-    birthCertificate: String,
-    nationalID: String,
-  },
+  academicAspiration: [{ type: String }],
+  documents: [{type: String}],
 });
 
 // Export the model
-export const ApplicantModel: Model<IApplicant> = mongoose.model<IApplicant>("Applicant", applicantSchema);
+export const ApplicantModel: Model<IApplicant> = mongoose.model<IApplicant>(
+  "Applicant",
+  applicantSchema
+);

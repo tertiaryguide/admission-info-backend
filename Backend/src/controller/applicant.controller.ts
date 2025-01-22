@@ -414,6 +414,22 @@ export const deleteData = async (req: Request, res: Response, next: NextFunction
   }
 };
 
+export const uploadFiles = async (req: Request, res: Response, next: NextFunction): Promise<void>  => {
+  const { id } = req.params;
+  const { fileUrls } = req.body;
+  try {
+    const applicant = await ApplicantModel.findById(id)
+    if (!applicant) {
+      res.status(404).json({ error: "Applicant not found." });
+      return;
+    }
+    applicant.documents = fileUrls;
+    console.log("received");
+    res.status(200).json({ message: "Files uploaded successfully!" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to save file URLs." });
+  }
+}
 
 export const createProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -434,7 +450,7 @@ export const createProfile = async (req: Request, res: Response, next: NextFunct
     const newApplicant = new ApplicantModel({ referenceNumber, passKey});
     await newApplicant.save();
 
-    res.status(201).json({ message: "Applicant profile created successfully", data: newApplicant });
+    res.status(201).json({ message: "Applicant profile created successfully", data: newApplicant._id });
   } catch (error) {
     next(error);
   }
