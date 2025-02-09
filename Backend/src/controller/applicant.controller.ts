@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 import { ApplicantModel } from "../models/Applicant";
+import * as jwt from "jsonwebtoken";
+import { getErrorMessage } from "../utils/getErrorMessage";
+import bcrypt from "bcrypt";
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Create Background Data
 export const createBackgroundData = async (
@@ -11,7 +16,9 @@ export const createBackgroundData = async (
     const { applicantId, backgroundData } = req.body;
 
     if (!applicantId || !backgroundData) {
-      res.status(400).json({ message: "Applicant ID and background data are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and background data are required" });
       return;
     }
 
@@ -20,14 +27,15 @@ export const createBackgroundData = async (
       { backgroundData },
       { new: true } // Return the updated document
     );
-    
+
     if (!applicant) {
       res.status(404).json({ message: "Applicant not found" });
       return;
     }
-    
-    res.status(200).json({ message: "Background data added successfully", data: applicant });
 
+    res
+      .status(200)
+      .json({ message: "Background data added successfully", data: applicant });
   } catch (error) {
     next(error); // Pass errors to the global error handler
   }
@@ -43,7 +51,9 @@ export const createCaretakerData = async (
     const { applicantId, caretakerData } = req.body;
 
     if (!applicantId || !caretakerData) {
-      res.status(400).json({ message: "Applicant ID and caretaker data are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and caretaker data are required" });
       return;
     }
 
@@ -56,7 +66,9 @@ export const createCaretakerData = async (
     applicant.caretakr = caretakerData;
     await applicant.save();
 
-    res.status(200).json({ message: "Caretaker data added successfully", data: applicant });
+    res
+      .status(200)
+      .json({ message: "Caretaker data added successfully", data: applicant });
   } catch (error) {
     next(error); // Pass errors to the global error handler
   }
@@ -72,7 +84,9 @@ export const createAcademicHistory = async (
     const { applicantId, academicHistory } = req.body;
 
     if (!applicantId || !academicHistory) {
-      res.status(400).json({ message: "Applicant ID and academic history are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and academic history are required" });
       return;
     }
 
@@ -85,7 +99,10 @@ export const createAcademicHistory = async (
     applicant.academicHistory = academicHistory;
     await applicant.save();
 
-    res.status(200).json({ message: "Academic history added successfully", data: applicant });
+    res.status(200).json({
+      message: "Academic history added successfully",
+      data: applicant,
+    });
   } catch (error) {
     next(error); // Pass errors to the global error handler
   }
@@ -101,7 +118,9 @@ export const createAcademicAspiration = async (
     const { applicantId, academicAspiration } = req.body;
 
     if (!applicantId || !academicAspiration) {
-      res.status(400).json({ message: "Applicant ID and academic aspiration are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and academic aspiration are required" });
       return;
     }
 
@@ -114,7 +133,10 @@ export const createAcademicAspiration = async (
     applicant.academicAspiration = academicAspiration;
     await applicant.save();
 
-    res.status(200).json({ message: "Academic aspiration added successfully", data: applicant });
+    res.status(200).json({
+      message: "Academic aspiration added successfully",
+      data: applicant,
+    });
   } catch (error) {
     next(error); // Pass errors to the global error handler
   }
@@ -130,7 +152,9 @@ export const editBackgroundData = async (
     const { applicantId, backgroundData } = req.body;
 
     if (!applicantId || !backgroundData) {
-      res.status(400).json({ message: "Applicant ID and background data are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and background data are required" });
       return;
     }
 
@@ -145,7 +169,10 @@ export const editBackgroundData = async (
       return;
     }
 
-    res.status(200).json({ message: "Background data updated successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Background data updated successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
@@ -161,7 +188,9 @@ export const editCaretakerData = async (
     const { applicantId, caretakerData } = req.body;
 
     if (!applicantId || !caretakerData) {
-      res.status(400).json({ message: "Applicant ID and caretaker data are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and caretaker data are required" });
       return;
     }
 
@@ -176,7 +205,10 @@ export const editCaretakerData = async (
       return;
     }
 
-    res.status(200).json({ message: "Caretaker data updated successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Caretaker data updated successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
@@ -192,7 +224,9 @@ export const editAcademicHistory = async (
     const { applicantId, academicHistory } = req.body;
 
     if (!applicantId || !academicHistory) {
-      res.status(400).json({ message: "Applicant ID and academic history are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and academic history are required" });
       return;
     }
 
@@ -207,7 +241,10 @@ export const editAcademicHistory = async (
       return;
     }
 
-    res.status(200).json({ message: "Academic history updated successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Academic history updated successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
@@ -223,7 +260,9 @@ export const editAcademicAspiration = async (
     const { applicantId, academicAspiration } = req.body;
 
     if (!applicantId || !academicAspiration) {
-      res.status(400).json({ message: "Applicant ID and academic aspiration are required" });
+      res
+        .status(400)
+        .json({ message: "Applicant ID and academic aspiration are required" });
       return;
     }
 
@@ -238,7 +277,10 @@ export const editAcademicAspiration = async (
       return;
     }
 
-    res.status(200).json({ message: "Academic aspiration updated successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Academic aspiration updated successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
@@ -269,7 +311,10 @@ export const deleteBackgroundData = async (
       return;
     }
 
-    res.status(200).json({ message: "Background data deleted successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Background data deleted successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
@@ -300,7 +345,10 @@ export const deleteCaretakerData = async (
       return;
     }
 
-    res.status(200).json({ message: "Caretaker data deleted successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Caretaker data deleted successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
@@ -331,7 +379,10 @@ export const deleteAcademicHistory = async (
       return;
     }
 
-    res.status(200).json({ message: "Academic history deleted successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Academic history deleted successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
@@ -362,14 +413,20 @@ export const deleteAcademicAspiration = async (
       return;
     }
 
-    res.status(200).json({ message: "Academic aspiration deleted successfully", data: updatedApplicant });
+    res.status(200).json({
+      message: "Academic aspiration deleted successfully",
+      data: updatedApplicant,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-
-export const retrieveData = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const retrieveData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const { applicantId } = req.params;
 
@@ -385,14 +442,20 @@ export const retrieveData = async (req: Request, res: Response, next: NextFuncti
       return;
     }
 
-    res.status(200).json({ message: "Applicant data retrieved successfully", data: applicant });
+    res.status(200).json({
+      message: "Applicant data retrieved successfully",
+      data: applicant,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-
-export const deleteData = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const deleteData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const { applicantId } = req.params;
 
@@ -401,24 +464,33 @@ export const deleteData = async (req: Request, res: Response, next: NextFunction
       return;
     }
 
-    const deletedApplicant = await ApplicantModel.findByIdAndDelete(applicantId);
+    const deletedApplicant = await ApplicantModel.findByIdAndDelete(
+      applicantId
+    );
 
     if (!deletedApplicant) {
       res.status(404).json({ message: "Applicant not found" });
       return;
     }
 
-    res.status(200).json({ message: "Applicant deleted successfully", data: deletedApplicant });
+    res.status(200).json({
+      message: "Applicant deleted successfully",
+      data: deletedApplicant,
+    });
   } catch (error) {
     next(error);
   }
 };
 
-export const uploadFiles = async (req: Request, res: Response, next: NextFunction): Promise<void>  => {
+export const uploadFiles = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   const { applicantId } = req.params;
   const { fileUrls } = req.body;
   try {
-    const applicant = await ApplicantModel.findById(applicantId)
+    const applicant = await ApplicantModel.findById(applicantId);
     if (!applicant) {
       res.status(404).json({ error: "Applicant not found." });
       return;
@@ -429,29 +501,80 @@ export const uploadFiles = async (req: Request, res: Response, next: NextFunctio
   } catch (error) {
     res.status(500).json({ error: "Failed to save file URLs." });
   }
-}
+};
 
-export const createProfile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const createProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const { referenceNumber, passKey } = req.body;
-
-    if (!referenceNumber ||!passKey ) {
-      res.status(400).json({ message: "Reference number and passkey are required" });
+    const { email, passKey } = req.body;
+    console.log(email, passKey);
+    if (!email || !passKey) {
+      res.status(400).json({ message: "Email and passkey are required" });
       return;
     }
 
-    const existingApplicant = await ApplicantModel.findOne({ referenceNumber});
-
+    const existingApplicant = await ApplicantModel.findOne({ email });
+    console.log(existingApplicant);
     if (existingApplicant) {
-      res.status(409).json({ message: "Reference number already exists" });
+      res.status(409).json({ message: "Email already exists" });
       return;
     }
-
-    const newApplicant = new ApplicantModel({ referenceNumber, passKey});
+    console.log("creating applicant");
+    const newApplicant = new ApplicantModel({ email, passKey });
     await newApplicant.save();
-
-    res.status(201).json({ message: "Applicant profile created successfully", data: newApplicant._id });
+    console.log("done creating applicant");
+    const token = jwt.sign({ id: newApplicant._id?.toString() }, JWT_SECRET, {
+      expiresIn: "30 days",
+    });
+    res.status(201).json({
+      message: "Applicant profile created successfully",
+      data: newApplicant._id,
+      token,
+      success: true,
+    });
   } catch (error) {
     next(error);
   }
-}
+};
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { data } = req.body;
+
+    if (!data) {
+      res.status(400).json({ message: "data are required" });
+      return;
+    }
+    const applicant = await ApplicantModel.findOne({
+      referenceNumber: data.referenceNumber,
+    });
+    if (!applicant) {
+      res.status(401).json({ message: "Invalid credentials" });
+      return;
+    }
+    const passKeysMatch = await bcrypt.compareSync(
+      data.passKey,
+      applicant.passKey
+    );
+
+    if (passKeysMatch) {
+      const token = jwt.sign({ id: applicant._id?.toString() }, JWT_SECRET, {
+        expiresIn: "30 days",
+      });
+      res
+        .status(200)
+        .json({ message: "Applicant logged in successfully", token: token });
+    } else {
+      throw new Error("passKeys do not match");
+    }
+  } catch (error) {
+    res.status(500).send(getErrorMessage(error));
+  }
+};

@@ -10,28 +10,27 @@ import router from "./routes/applicant.routes";
 
 const app = express();
 dotenv.config();
-export const JWT_SECRET = process.env.JWT_SECRET
 
 const corsOptions = {
-  origin: "http://localhost:5173",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
+
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions))
 app.use(compression());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
 const server = http.createServer(app);
 
-server.listen(process.env.PORT, () => {
-  console.log("server running on port 8000");
-});
 
 app.use("/api/applicant", router);
 
 app.post("/api/logout", (req: Request, res: Response) => {
-  res.clearCookie("authToken", {
+  res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
@@ -41,3 +40,6 @@ app.post("/api/logout", (req: Request, res: Response) => {
 mongoose.Promise = Promise;
 mongoose.connect(process.env.DB_URL);
 mongoose.connection.on("error", (error: Error) => console.log(error));
+server.listen(process.env.PORT, () => {
+  console.log("server running on port 8000");
+});

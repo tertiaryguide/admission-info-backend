@@ -23,7 +23,7 @@
 
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { JWT_SECRET } from 'index';
+const JWT_SECRET = process.env.JWT_SECRET
 
 export const SECRET_KEY: Secret = JWT_SECRET;
 

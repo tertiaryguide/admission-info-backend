@@ -7,26 +7,32 @@ import {
   retrieveData,
   deleteData,
   createProfile,
-  uploadFiles
+  uploadFiles,
+  login
 } from "../controller/applicant.controller"; // Adjust the path as needed
+import { auth } from "../middleware";
 
 const router = Router();
 
+// route for account creation and login
+router.post("/create-applicant", createProfile)
+router.post("/login", login)
+
 // Route for creating background data
-router.post("/background-data", createBackgroundData);
+router.post("/background-data",auth, createBackgroundData);
 
 // Route for creating caretaker data
-router.post("/caretaker-data", createCaretakerData);
+router.post("/caretaker-data",auth, createCaretakerData);
 
 // Route for creating academic history
-router.post("/academic-history", createAcademicHistory);
+router.post("/academic-history",auth, createAcademicHistory);
 
 // Route for creating academic aspiration
-router.post("/academic-aspiration", createAcademicAspiration);
+router.post("/academic-aspiration",auth, createAcademicAspiration);
 
-router.get("/:applicantId/fetch-data", retrieveData)
-router.post("/create-applicant", createProfile)
-router.delete("/:applicantId/delete-data", deleteData)
+router.get("/:applicantId/fetch-data",auth, retrieveData)
+
+router.delete("/:applicantId/delete-data",auth, deleteData)
 
 router.post("/:applicantId/upload-files", uploadFiles);
 

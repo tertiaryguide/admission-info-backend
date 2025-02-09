@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { AdminModel } from "models/Admin";
 import bcrypt from "bcrypt";
-import { JWT_SECRET } from "index";
 import * as jwt from "jsonwebtoken";
 import { getErrorMessage } from "utils/getErrorMessage";
+const JWT_SECRET = process.env.JWT_SECRET
 
 // Create admin
 export const createAdmin = async (
@@ -24,10 +24,12 @@ export const createAdmin = async (
       ...data,
       password: hashedPassword,
     });
-
+    const token = jwt.sign({ id: admin._id?.toString() }, JWT_SECRET, {
+      expiresIn: "30 days",
+    });
     res
       .status(200)
-      .json({ message: "Admin created successfully", data: admin });
+      .json({ message: "Admin created successfully", token: token });
   } catch (error) {
     res.status(500).send(getErrorMessage(error));
   }
@@ -61,7 +63,7 @@ export const loginAdmin = async (
       });
       res
         .status(200)
-        .json({ message: "Admin logged in successfully", data: admin });
+        .json({ message: "Admin logged in successfully", token: token });
     } else {
       throw new Error("Passwords do not match");
     }

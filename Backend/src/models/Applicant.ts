@@ -2,8 +2,8 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 // Define an interface for Applicant
 interface IApplicant extends Document {
-  referenceNumber: string;
   passKey: string;
+  email: string;
   backgroundData: {
     surname: string;
     otherNames: string;
@@ -12,7 +12,6 @@ interface IApplicant extends Document {
     placeOfResidence: string;
     digitalAddress: string;
     homeAddress: string;
-    email: string;
     contact: string;
   };
   caretakr: {
@@ -63,8 +62,8 @@ interface IApplicant extends Document {
 
 // Define the schema
 const applicantSchema: Schema = new Schema({
-  referenceNumber: { type: String, unique: true, required: true },
   passKey: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   backgroundData: {
     surname: { type: String },
     otherNames: { type: String },
@@ -73,7 +72,6 @@ const applicantSchema: Schema = new Schema({
     placeOfResidence: { type: String },
     digitalAddress: { type: String },
     homeAddress: { type: String },
-    email: { type: String },
     contact: { type: String },
   },
   caretakr: {
