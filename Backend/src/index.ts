@@ -6,8 +6,7 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
-import router from "./routes";
-import { uploadFiles } from "controller/applicant.controller";
+import router from "./routes/applicant.routes";
 
 const app = express();
 dotenv.config();
@@ -28,9 +27,8 @@ const server = http.createServer(app);
 server.listen(process.env.PORT, () => {
   console.log("server running on port 8000");
 });
-app.post("/api/:id/upload-files", uploadFiles);
 
-app.use("/api/applicants", router);
+app.use("/api/applicant", router);
 
 app.post("/api/logout", (req: Request, res: Response) => {
   res.clearCookie("authToken", {

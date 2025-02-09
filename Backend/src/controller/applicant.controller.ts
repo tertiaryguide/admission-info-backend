@@ -344,7 +344,7 @@ export const deleteAcademicAspiration = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { applicantId } = req.body;
+    const { applicantId } = req.params;
 
     if (!applicantId) {
       res.status(400).json({ message: "Applicant ID is required" });
@@ -415,10 +415,10 @@ export const deleteData = async (req: Request, res: Response, next: NextFunction
 };
 
 export const uploadFiles = async (req: Request, res: Response, next: NextFunction): Promise<void>  => {
-  const { id } = req.params;
+  const { applicantId } = req.params;
   const { fileUrls } = req.body;
   try {
-    const applicant = await ApplicantModel.findById(id)
+    const applicant = await ApplicantModel.findById(applicantId)
     if (!applicant) {
       res.status(404).json({ error: "Applicant not found." });
       return;
