@@ -4,8 +4,8 @@ import * as jwt from "jsonwebtoken";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import bcrypt from "bcrypt";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
+const SECRET = "27Hi0oIY2Fgh!9";
+console.log(SECRET);
 // Create Background Data
 export const createBackgroundData = async (
   req: Request,
@@ -523,10 +523,12 @@ export const createProfile = async (
       return;
     }
     console.log("creating applicant");
-    const newApplicant = new ApplicantModel({ email, passKey });
+    const hashedPassKey = bcrypt.hashSync(passKey, 10);
+    const newApplicant = new ApplicantModel({ email, passKey:hashedPassKey });
     await newApplicant.save();
     console.log("done creating applicant");
-    const token = jwt.sign({ id: newApplicant._id?.toString() }, JWT_SECRET, {
+    console.log(SECRET)
+    const token = jwt.sign({ id: newApplicant._id?.toString() }, SECRET, {
       expiresIn: "30 days",
     });
     res.status(201).json({
@@ -546,28 +548,31 @@ export const login = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { data } = req.body;
-
-    if (!data) {
+    const { email, passKey } = req.body;
+    console.log(1)
+    if (!email || !passKey) {
       res.status(400).json({ message: "data are required" });
       return;
     }
-    const applicant = await ApplicantModel.findOne({
-      referenceNumber: data.referenceNumber,
-    });
+    const applicant = await ApplicantModel.findOne({email});
+    console.log(applicant)
     if (!applicant) {
       res.status(401).json({ message: "Invalid credentials" });
       return;
     }
-    const passKeysMatch = await bcrypt.compareSync(
-      data.passKey,
+    console.log(3)
+
+    const passKeysMatch = bcrypt.compareSync(
+      passKey,
       applicant.passKey
     );
+    console.log(4)
 
     if (passKeysMatch) {
-      const token = jwt.sign({ id: applicant._id?.toString() }, JWT_SECRET, {
+      const token = jwt.sign({ id: applicant._id?.toString() }, SECRET, {
         expiresIn: "30 days",
       });
+    console.log(4)
       res
         .status(200)
         .json({ message: "Applicant logged in successfully", token: token });
