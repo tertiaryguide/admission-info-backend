@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AdminModel } from "models/Admin";
+import { AdminModel } from "models/admin.model";
 import bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import { getErrorMessage } from "utils/getErrorMessage";

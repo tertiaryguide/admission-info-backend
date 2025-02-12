@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ApplicantModel } from "../models/Applicant";
+import { ApplicantModel } from "../models/applicant.model";
 import * as jwt from "jsonwebtoken";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import bcrypt from "bcrypt";
@@ -533,9 +533,8 @@ export const createProfile = async (
     });
     res.status(201).json({
       message: "Applicant profile created successfully",
-      data: newApplicant._id,
+      id: newApplicant._id,
       token,
-      success: true,
     });
   } catch (error) {
     next(error);
@@ -575,7 +574,7 @@ export const login = async (
     console.log(4)
       res
         .status(200)
-        .json({ message: "Applicant logged in successfully", token: token });
+        .json({ message: "Applicant logged in successfully", token: token, id: applicant._id });
     } else {
       throw new Error("passKeys do not match");
     }
