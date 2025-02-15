@@ -7,7 +7,7 @@ interface IApplicant extends Document {
   backgroundData: {
     surname: string;
     otherNames: string;
-    dateOfBirth: String;
+    dateOfBirth: string;
     nationality: string;
     placeOfResidence: string;
     digitalAddress: string;
@@ -57,8 +57,9 @@ interface IApplicant extends Document {
     }[];
   };
   academicAspiration: string[];
-  documents: string[];
+  documents: Map<string, string>; // Fix: Map type with key and value
 }
+
 
 // Define the schema
 const applicantSchema: Schema = new Schema({
@@ -114,9 +115,12 @@ const applicantSchema: Schema = new Schema({
     ],
   },
   academicAspiration: [{ type: String }],
-  documents: [{type: String}],
-});
-
+  documents: {
+    type: Map,
+    of: String, // Value type is String
+    default: {}, // Initialize as an empty Map
+  }, 
+})
 // Export the model
 export const ApplicantModel: Model<IApplicant> = mongoose.model<IApplicant>(
   "Applicant",

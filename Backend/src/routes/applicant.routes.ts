@@ -8,7 +8,8 @@ import {
   deleteData,
   createProfile,
   uploadFiles,
-  login
+  login,
+  uploadFile
 } from "../controller/applicant.controller"; // Adjust the path as needed
 import { auth } from "../middleware";
 
@@ -34,7 +35,7 @@ router.get("/:applicantId/fetch-data",auth, retrieveData)
 
 router.delete("/:applicantId/delete-data",auth, deleteData)
 
-router.post("/:applicantId/upload-files", uploadFiles);
+router.post("/:applicantId/upload-file",auth, uploadFile);
 
 
 export default router;

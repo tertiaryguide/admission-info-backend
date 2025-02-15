@@ -429,22 +429,22 @@ export const retrieveData = async (
 ): Promise<void> => {
   try {
     const { applicantId } = req.params;
-
+    console.log(`Retrieving`, applicantId)
     if (!applicantId) {
       res.status(400).json({ message: "Applicant ID is required" });
       return;
     }
-
+    console.log(`Retrieving applying information`)
     const applicant = await ApplicantModel.findById(applicantId);
 
     if (!applicant) {
       res.status(404).json({ message: "Applicant not found" });
       return;
     }
-
+    console.log(applicant)
     res.status(200).json({
       message: "Applicant data retrieved successfully",
-      data: applicant,
+      applicant: applicant,
     });
   } catch (error) {
     next(error);
@@ -502,6 +502,39 @@ export const uploadFiles = async (
     res.status(500).json({ error: "Failed to save file URLs." });
   }
 };
+export const uploadFile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const { applicantId } = req.params;
+  const { fileUrl, selectedField } = req.body;
+
+  try {
+    const applicant = await ApplicantModel.findById(applicantId);
+
+    if (!applicant) {
+      res.status(404).json({ error: "Applicant not found." });
+      return;
+    }
+
+    // Ensure documents is initialized as a Map
+    if (!applicant.documents) {
+      applicant.documents = new Map<string, string>();
+    }
+
+    // Use Map's set method to store the document as a key-value pair
+    applicant.documents.set(selectedField, fileUrl);
+
+    await applicant.save();
+    console.log("Document uploaded");
+    res.status(200).json({ message: "File uploaded successfully!" });
+  } catch (error) {
+    console.error("Error saving file:", error);
+    res.status(500).json({ error: "Failed to save file URL." });
+  }
+};
+
 
 export const createProfile = async (
   req: Request,
