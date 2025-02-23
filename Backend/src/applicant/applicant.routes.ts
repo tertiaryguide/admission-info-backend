@@ -10,7 +10,7 @@ import {
   uploadFiles,
   login,
   uploadFile
-} from "../controller/applicant.controller"; // Adjust the path as needed
+} from "./applicant.controller"; // Adjust the path as needed
 import { auth } from "../middleware";
 
 const router = Router();
@@ -23,7 +23,7 @@ router.post("/login", login)
 router.post("/background-data",auth, createBackgroundData);
 
 // Route for creating caretaker data
-router.post("/caretaker-data",auth, createCaretakerData);
+router.post("/caretaker-data",auth, createCaretakerData); 
 
 // Route for creating academic history
 router.post("/academic-history",auth, createAcademicHistory);

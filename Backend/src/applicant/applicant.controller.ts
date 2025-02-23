@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ApplicantModel } from "../models/applicant.model";
+import { ApplicantModel } from "./applicant.model";
 import * as jwt from "jsonwebtoken";
 import { getErrorMessage } from "../utils/getErrorMessage";
 import bcrypt from "bcrypt";
@@ -604,7 +604,7 @@ export const login = async (
       const token = jwt.sign({ id: applicant._id?.toString() }, SECRET, {
         expiresIn: "30 days",
       });
-    console.log(4)
+    console.log(5)
       res
         .status(200)
         .json({ message: "Applicant logged in successfully", token: token, id: applicant._id });

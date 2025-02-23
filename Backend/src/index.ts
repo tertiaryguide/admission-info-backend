@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import * as dotenv from "dotenv";
 import mongoose from "mongoose";
-import router from "./routes/applicant.routes";
+import router from "./applicant/applicant.routes";
 
 const app = express();
 dotenv.config();
