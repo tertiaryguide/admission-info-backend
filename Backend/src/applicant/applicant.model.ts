@@ -4,7 +4,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 interface IApplicant extends Document {
   passKey: string;
   email: string;
-  backgroundData: {
+  personalInfo: {
     surname: string;
     otherNames: string;
     dateOfBirth: string;
@@ -14,7 +14,7 @@ interface IApplicant extends Document {
     homeAddress: string;
     contact: string;
   };
-  caretakr: {
+  guardianInfo: {
     mother: {
       name: string;
       isAlive: boolean;
@@ -46,26 +46,28 @@ interface IApplicant extends Document {
     sessionToken?: string;
   };
   academicHistory: {
-    indexNumber: number;
+    indexNumber: string;
     school: string;
-    year: number;
-    course: string;
+    year: string;
+    course: string; 
     examsType: string;
-    results: {
-      subject: string;
-      score: number;
-    }[];
+    results: [
+      {
+        subject: { type: String },
+        grade: { type: String },
+      },
+      { _id: false } // Prevent MongoDB from adding _id to each result
+    ],
   };
   academicAspiration: string[];
   documents: Map<string, string>; // Fix: Map type with key and value
 }
 
-
 // Define the schema
 const applicantSchema: Schema = new Schema({
   passKey: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  backgroundData: {
+  personalInfo: {
     surname: { type: String },
     otherNames: { type: String },
     dateOfBirth: { type: String },
@@ -75,7 +77,7 @@ const applicantSchema: Schema = new Schema({
     homeAddress: { type: String },
     contact: { type: String },
   },
-  caretakr: {
+  guardianInfo: {
     mother: {
       name: { type: String },
       isAlive: { type: Boolean },
@@ -102,15 +104,15 @@ const applicantSchema: Schema = new Schema({
     },
   },
   academicHistory: {
-    indexNumber: { type: Number },
+    indexNumber: { type: String },
     school: { type: String },
-    year: { type: Number },
+    year: { type: String },
     course: { type: String },
     examsType: { type: String },
     results: [
       {
         subject: { type: String },
-        score: { type: Number },
+        grade: { type: String },
       },
     ],
   },
@@ -119,8 +121,9 @@ const applicantSchema: Schema = new Schema({
     type: Map,
     of: String, // Value type is String
     default: {}, // Initialize as an empty Map
-  }, 
-})
+  },
+});
+
 // Export the model
 export const ApplicantModel: Model<IApplicant> = mongoose.model<IApplicant>(
   "Applicant",

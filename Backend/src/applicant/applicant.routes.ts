@@ -1,15 +1,18 @@
 import { Router } from "express";
 import { 
-  createBackgroundData, 
+  createPersonalInfo, 
   createCaretakerData, 
-  createAcademicHistory, 
+  createAcademics, 
   createAcademicAspiration, 
   retrieveData,
   deleteData,
   createProfile,
   uploadFiles,
   login,
-  uploadFile
+  uploadFile,
+  editAcademicHistory,
+  editAcademicAspiration,
+  editPersonalInfo
 } from "./applicant.controller"; // Adjust the path as needed
 import { auth } from "../middleware";
 
@@ -20,16 +23,20 @@ router.post("/create-applicant", createProfile)
 router.post("/login", login)
 
 // Route for creating background data
-router.post("/background-data",auth, createBackgroundData);
+router.post("/background-data",auth, createPersonalInfo);
+router.put("/:applicantId/update-personal-info", editPersonalInfo)
 
 // Route for creating caretaker data
 router.post("/caretaker-data",auth, createCaretakerData); 
 
 // Route for creating academic history
-router.post("/academic-history",auth, createAcademicHistory);
+router.post("/academics",auth, createAcademics);
 
-// Route for creating academic aspiration
-router.post("/academic-aspiration",auth, createAcademicAspiration);
+// Route for updating academic history
+router.put("/:applicantId/update-academic-history",auth, editAcademicHistory);
+
+// Route for updating academic aspiration
+router.put("/:applicantId/update-academic-aspiration",auth, editAcademicAspiration);
 
 router.get("/:applicantId/fetch-data",auth, retrieveData)
 

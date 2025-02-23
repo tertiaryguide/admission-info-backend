@@ -7,15 +7,15 @@ import bcrypt from "bcrypt";
 const SECRET = "27Hi0oIY2Fgh!9";
 console.log(SECRET);
 // Create Background Data
-export const createBackgroundData = async (
+export const createPersonalInfo = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { applicantId, backgroundData } = req.body;
-
-    if (!applicantId || !backgroundData) {
+    const { applicantId, personalInfo } = req.body;
+    console.log(personalInfo, applicantId)
+    if (!applicantId || !personalInfo) {
       res
         .status(400)
         .json({ message: "Applicant ID and background data are required" });
@@ -24,7 +24,7 @@ export const createBackgroundData = async (
 
     const applicant = await ApplicantModel.findByIdAndUpdate(
       applicantId,
-      { backgroundData },
+      { personalInfo },
       { new: true } // Return the updated document
     );
 
@@ -63,7 +63,7 @@ export const createCaretakerData = async (
       return;
     }
 
-    applicant.caretakr = caretakerData;
+    applicant.guardianInfo = caretakerData;
     await applicant.save();
 
     res
@@ -75,18 +75,16 @@ export const createCaretakerData = async (
 };
 
 // Create Academic History
-export const createAcademicHistory = async (
+export const createAcademics = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { applicantId, academicHistory } = req.body;
+    const { applicantId, academicHistory, academicAspiration } = req.body;
 
-    if (!applicantId || !academicHistory) {
-      res
-        .status(400)
-        .json({ message: "Applicant ID and academic history are required" });
+    if (!applicantId || !academicHistory || !academicAspiration) {
+      res.status(400).json({ message: "Applicant ID, academic history, and academic aspiration are required" });
       return;
     }
 
@@ -96,17 +94,49 @@ export const createAcademicHistory = async (
       return;
     }
 
-    applicant.academicHistory = academicHistory;
+    // Ensure academicHistory has a results property and it's an array
+    if (!Array.isArray(academicHistory.results)) {
+      res.status(400).json({ message: "Academic history results must be an array" });
+      return;
+    }
+    // Ensure results contain subject and grade before saving
+    const formattedResults = academicHistory.results.map((result: any) => {
+      if (!result.subject || !result.grade) {
+        throw new Error("Each result must have a subject and grade");
+      }
+      return {
+        subject: result.subject,
+        grade: result.grade,
+      };
+    });
+
+    applicant.academicHistory = {
+      ...academicHistory,
+      results: formattedResults,
+    };
+
+    applicant.academicAspiration = academicAspiration;
     await applicant.save();
 
     res.status(200).json({
-      message: "Academic history added successfully",
-      data: applicant,
+      message: "Academic history and aspiration added successfully",
+      data: {
+        course: applicant.academicHistory.course,
+        examsType: applicant.academicHistory.examsType,
+        results: applicant.academicHistory.results,
+        academicAspiration: applicant.academicAspiration,
+      },
     });
   } catch (error) {
-    next(error); // Pass errors to the global error handler
+    console.error("Error in createAcademics:", error);
+    if (error instanceof Error) {
+      res.status(400).json({ message: error.message });
+    } else {
+      next(error);
+    }
   }
 };
+
 
 // Create Academic Aspiration
 export const createAcademicAspiration = async (
@@ -143,15 +173,16 @@ export const createAcademicAspiration = async (
 };
 
 // Edit Background Data
-export const editBackgroundData = async (
+export const editPersonalInfo = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { applicantId, backgroundData } = req.body;
+    const { applicantId } = req.params;
+    const { personalInfo } = req.body;
 
-    if (!applicantId || !backgroundData) {
+    if (!applicantId || !personalInfo) {
       res
         .status(400)
         .json({ message: "Applicant ID and background data are required" });
@@ -160,7 +191,7 @@ export const editBackgroundData = async (
 
     const updatedApplicant = await ApplicantModel.findByIdAndUpdate(
       applicantId,
-      { backgroundData },
+      { personalInfo },
       { new: true } // Return the updated document
     );
 
@@ -179,13 +210,14 @@ export const editBackgroundData = async (
 };
 
 // Edit Caretaker Data
-export const editCaretakerData = async (
+export const editGuardianInfo = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { applicantId, caretakerData } = req.body;
+    const { applicantId } = req.params;
+    const { caretakerData } = req.body;
 
     if (!applicantId || !caretakerData) {
       res
@@ -196,7 +228,7 @@ export const editCaretakerData = async (
 
     const updatedApplicant = await ApplicantModel.findByIdAndUpdate(
       applicantId,
-      { caretakr: caretakerData },
+      { guardianInfo: caretakerData },
       { new: true }
     );
 
@@ -214,14 +246,15 @@ export const editCaretakerData = async (
   }
 };
 
-// Edit Academic History
+// Edit Academic History 
 export const editAcademicHistory = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { applicantId, academicHistory } = req.body;
+    const { applicantId } = req.params;
+    const { academicHistory } = req.body;
 
     if (!applicantId || !academicHistory) {
       res
@@ -257,7 +290,8 @@ export const editAcademicAspiration = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { applicantId, academicAspiration } = req.body;
+    const { applicantId } = req.params;
+    const { academicAspiration } = req.body;
 
     if (!applicantId || !academicAspiration) {
       res
@@ -287,7 +321,7 @@ export const editAcademicAspiration = async (
 };
 
 // Delete Background Data
-export const deleteBackgroundData = async (
+export const deletepersonalInfo = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -302,7 +336,7 @@ export const deleteBackgroundData = async (
 
     const updatedApplicant = await ApplicantModel.findByIdAndUpdate(
       applicantId,
-      { $unset: { backgroundData: "" } }, // Remove the backgroundData field
+      { $unset: { personalInfo: "" } }, // Remove the personalInfo field
       { new: true }
     );
 
@@ -336,7 +370,7 @@ export const deleteCaretakerData = async (
 
     const updatedApplicant = await ApplicantModel.findByIdAndUpdate(
       applicantId,
-      { $unset: { caretakr: "" } },
+      { $unset: { guardianInfo: "" } },
       { new: true }
     );
 
