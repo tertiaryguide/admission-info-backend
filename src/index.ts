@@ -12,7 +12,7 @@ const app = express();
 dotenv.config();
 
 const corsOptions = {
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173", "https://tg-portal.vercel.app"],
   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -41,5 +41,5 @@ mongoose.Promise = Promise;
 mongoose.connect(process.env.DB_URL);
 mongoose.connection.on("error", (error: Error) => console.log(error));
 server.listen(process.env.PORT, () => {
-  console.log("server running on port 8000");
+  console.log("server running on port 8000", process.env.DB_URL);
 });
